@@ -14,8 +14,12 @@ public class Game extends HttpServlet {
   @Override
   protected void doGet(HttpServletRequest req, HttpServletResponse resp)
       throws ServletException, IOException {
-    req.getSession().setAttribute("word", "test");
-    req.getSession().setAttribute("hangman", new HangMan());
+    req.getSession().removeAttribute("lost");
+    req.getSession().removeAttribute("hangman");
+    req.getSession().removeAttribute("result");
+    req.getSession().removeAttribute("guess");
+    req.getSession().removeAttribute("printHangMan");
+    req.getSession().setAttribute("hangman", new HangMan("test"));
     RequestDispatcher rd = req.getServletContext().getRequestDispatcher("/game.jsp");
     rd.forward(req, resp);
   }
@@ -25,9 +29,14 @@ public class Game extends HttpServlet {
       throws ServletException, IOException {
     HangMan hangman = (HangMan) req.getSession().getAttribute("hangman");
     String guess = req.getParameter("guess");
-    String word = req.getSession().getAttribute("word").toString();
-    req.getSession().setAttribute("printHangMan", hangman.printHangMan());
-    req.getSession().setAttribute("result", hangman.makeGuess(guess, word));
+
+    req.getSession().setAttribute("result", hangman.makeGuess(guess));
+    req.getSession().setAttribute("printHangMan", hangman.getVisual());
+    if (hangman.gameIsOver()) {
+      if (hangman.getWrongGuesses() >= 8) {
+        req.getSession().setAttribute("lost", true);
+      } else req.getSession().setAttribute("lost", false);
+    }
     req.getServletContext().getRequestDispatcher("/game.jsp").forward(req, resp);
   }
 

@@ -1,5 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+<jsp:useBean id="random" class="hangman.RandomBean" scope="application" />
+    
 <!DOCTYPE html>
 <html>
 <head>
@@ -8,7 +10,7 @@
 </head>
 <body>
 	<h1>Welcome to Hangman!</h1><br/>
-	<form method="get" action="/game/${sessionScope.gameID}">
+	<form method="get" action="/game/${random.nextInt}">
 	<button type="submit">Start a new game!</button>
 	</form>
 </body>
