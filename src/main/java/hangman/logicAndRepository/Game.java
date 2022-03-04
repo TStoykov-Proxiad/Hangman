@@ -1,4 +1,4 @@
-package hangman;
+package hangman.logicAndRepository;
 
 import jakarta.servlet.http.HttpServletRequest;
 

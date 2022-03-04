@@ -1,7 +1,8 @@
-package hangman;
+package hangman.presentation;
 
 import java.io.IOException;
 import org.springframework.context.ApplicationContext;
+import hangman.logicAndRepository.Game;
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;

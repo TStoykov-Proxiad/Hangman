@@ -1,4 +1,4 @@
-package hangman;
+package hangman.logicAndRepository;
 
 import java.util.Random;
 

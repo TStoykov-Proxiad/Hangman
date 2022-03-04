@@ -1,4 +1,4 @@
-package hangman;
+package hangman.presentation;
 
 import java.io.IOException;
 import jakarta.servlet.Filter;
