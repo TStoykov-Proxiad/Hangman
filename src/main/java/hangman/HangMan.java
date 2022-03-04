@@ -2,13 +2,18 @@ package hangman;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+import jakarta.servlet.http.HttpServletRequest;
 
-public class HangMan {
+@Component
+public class HangMan implements Game {
   private List<Character> guesses;
   private int wrongGuesses;
   private String word;
   private StringBuilder visual;
   private StringBuilder guessedLetters;
+  private Dictionary words;
 
   private StringBuilder generateLetters() {
     StringBuilder current = new StringBuilder(word.length());
@@ -47,23 +52,15 @@ public class HangMan {
     }
   }
 
-  public HangMan(String word) {
-    guesses = new ArrayList<Character>();
-    wrongGuesses = 0;
-    visual = new StringBuilder();
-    this.word = word;
-    guessedLetters = generateLetters();
-  }
-
-  public String getVisual() {
+  private String getVisual() {
     return visual.toString();
   }
 
-  public String getGuessedLetters() {
+  private String getGuessedLetters() {
     return guessedLetters.toString();
   }
 
-  public String makeGuess(String guess) {
+  private String makeGuess(String guess) {
     if (!word.contains((String.valueOf(guess.charAt(0))))) {
       wrongGuesses++;
       generateHangMan();
@@ -78,12 +75,41 @@ public class HangMan {
     return guessedLetters.toString();
   }
 
-  public boolean gameIsOver() {
+  private boolean gameIsOver() {
     if (!guessedLetters.toString().contains("-") || wrongGuesses >= 8) return true;
     return false;
   }
 
-  public int getWrongGuesses() {
+  private int getWrongGuesses() {
     return wrongGuesses;
+  }
+
+  @Override
+  public void play(HttpServletRequest req) {
+    String guess = req.getParameter(Game.INPUT_ATTR);
+
+    req.getSession().setAttribute(Game.RESULT_ATTR, makeGuess(guess));
+    req.getSession().setAttribute(Game.VISUAL_ATTR, getVisual());
+    if (gameIsOver()) {
+      if (getWrongGuesses() >= 8) {
+        req.getSession().setAttribute(Game.LOST_ATTR, true);
+      } else req.getSession().setAttribute(Game.LOST_ATTR, false);
+    }
+  }
+
+  @Override
+  public String initialPrint() {
+
+    return getGuessedLetters();
+  }
+
+  @Autowired
+  public HangMan(Dictionary words) {
+    guesses = new ArrayList<>();
+    wrongGuesses = 0;
+    visual = new StringBuilder();
+    this.words = words;
+    this.word = this.words.getWord();
+    guessedLetters = generateLetters();
   }
 }

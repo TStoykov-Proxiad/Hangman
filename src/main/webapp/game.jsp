@@ -10,24 +10,26 @@
 <title>Game</title>
 </head>
 <body>
-	<p><pre>${sessionScope.printHangMan}</pre></p>
+	<p>
+	<pre>${sessionScope.printVisual}</pre>
+	</p>
 
 	<p>${sessionScope.result}</p>
 	<c:choose>
 		<c:when test="${sessionScope.lost == null}">
 			<form method="post">
-				<label>Guess:</label> <input type=text name="guess"></input>
+				<label>Guess:</label> <input type=text name="input" required></input>
 			</form>
 		</c:when>
 		<c:when test="${sessionScope.lost == true}">
-		<p>You lost!</p>
-			<form method="get" action="/game/${random.nextInt}">
+			<p>You lost!</p>
+			<form method="get" action="/games/${random.nextInt}">
 				<button type="submit">Try again?</button>
 			</form>
 		</c:when>
 		<c:when test="${sessionScope.lost == false}">
-		<p>Congratulations, you guessed the word!</p>
-			<form method="get" action="/game/${random.nextInt}">
+			<p>Congratulations, you guessed the word!</p>
+			<form method="get" action="/games/${random.nextInt}">
 				<button type="submit">Play another game?</button>
 			</form>
 		</c:when>
