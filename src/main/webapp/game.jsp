@@ -15,6 +15,7 @@
 	</p>
 
 	<p>${sessionScope.result}</p>
+	<p>${sessionScope.wrongInput}</p>
 	<c:choose>
 		<c:when test="${sessionScope.lost == null}">
 			<form method="post">

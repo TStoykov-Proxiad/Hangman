@@ -60,12 +60,12 @@ public class HangMan implements Game {
     return guessedLetters.toString();
   }
 
-  private String makeGuess(String guess) {
-    if (!word.contains((String.valueOf(guess.charAt(0))))) {
+  private String makeGuess(Character guess) {
+    guesses.add(guess);
+    if (!word.contains((String.valueOf(guess)))) {
       wrongGuesses++;
       generateHangMan();
     } else {
-      guesses.add(guess.charAt(0));
       for (int i = 1; i < word.length() - 1; i++) {
         if ((guessedLetters.charAt(i) == '-') && (guesses.contains(word.charAt(i)))) {
           guessedLetters.setCharAt(i, word.charAt(i));
@@ -80,20 +80,26 @@ public class HangMan implements Game {
     return false;
   }
 
-  private int getWrongGuesses() {
-    return wrongGuesses;
-  }
-
   @Override
   public void play(HttpServletRequest req) {
     String guess = req.getParameter(Game.INPUT_ATTR);
-
-    req.getSession().setAttribute(Game.RESULT_ATTR, makeGuess(guess));
-    req.getSession().setAttribute(Game.VISUAL_ATTR, getVisual());
-    if (gameIsOver()) {
-      if (getWrongGuesses() >= 8) {
-        req.getSession().setAttribute(Game.LOST_ATTR, true);
-      } else req.getSession().setAttribute(Game.LOST_ATTR, false);
+    req.getSession().removeAttribute(Game.WRONG_ATTR);
+    if (!guess.matches("^[a-zA-Z]*$")) {
+      req.getSession().setAttribute(Game.WRONG_ATTR, "Please input only letters!");
+    } else if (guess.length() > 1) {
+      req.getSession().setAttribute(Game.WRONG_ATTR, "Please input only 1 character at a time!");
+    } else {
+      if (!guesses.contains(guess.charAt(0))) {
+        req.getSession().setAttribute(Game.RESULT_ATTR, makeGuess(guess.charAt(0)));
+        req.getSession().setAttribute(Game.VISUAL_ATTR, getVisual());
+        if (gameIsOver()) {
+          if (wrongGuesses >= 8) {
+            req.getSession().setAttribute(Game.LOST_ATTR, true);
+          } else req.getSession().setAttribute(Game.LOST_ATTR, false);
+        }
+      } else {
+        req.getSession().setAttribute(Game.WRONG_ATTR, "This letter has already been guessed!");
+      }
     }
   }
 
@@ -105,7 +111,7 @@ public class HangMan implements Game {
 
   @Autowired
   public HangMan(Dictionary words) {
-    guesses = new ArrayList<>();
+    guesses = new ArrayList<Character>();
     wrongGuesses = 0;
     visual = new StringBuilder();
     this.words = words;

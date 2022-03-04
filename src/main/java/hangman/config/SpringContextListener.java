@@ -8,6 +8,7 @@ import jakarta.servlet.annotation.WebListener;
 
 @WebListener
 public class SpringContextListener implements ServletContextListener {
+
   @Override
   public void contextInitialized(ServletContextEvent sce) {
     ApplicationContext ctx = new AnnotationConfigApplicationContext(AppConfig.class);
