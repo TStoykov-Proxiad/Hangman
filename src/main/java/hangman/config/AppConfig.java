@@ -1,15 +1,9 @@
 package hangman.config;
 
 import java.util.Random;
-import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Primary;
-import org.springframework.context.annotation.Scope;
-import hangman.logicAndRepository.Dictionary;
-import hangman.logicAndRepository.Game;
-import hangman.logicAndRepository.HangMan;
 
 @Configuration
 @ComponentScan(basePackages = "hangman")
@@ -20,16 +14,23 @@ public class AppConfig {
     return new Random();
   }
 
-  @Bean
-  @Primary
-  public Dictionary getDictionary() {
-    return new Dictionary(getRandom());
-  }
-
-  @Bean
-  @Primary
-  @Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
-  public Game getGame() {
-    return new HangMan(getDictionary());
-  }
+  //  @Bean
+  //  @Primary
+  //  public Dictionary getDictionary() {
+  //    return new Dictionary(getRandom());
+  //  }
+  //
+  //  @Bean
+  //  @Primary
+  //  @Scope("prototype")
+  //  public String getWord() {
+  //    return getDictionary().getWord();
+  //  }
+  //
+  //  @Bean
+  //  @Primary
+  //  @Scope("prototype")
+  //  public Game getGame() {
+  //    return new HangMan(getWord());
+  //  }
 }

@@ -1,19 +1,105 @@
 package hangman.logicAndRepository;
 
-import java.util.ArrayList;
-import java.util.List;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import java.util.HashSet;
+import java.util.Set;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Service;
 import jakarta.servlet.http.HttpServletRequest;
 
-@Component
+@Service
+@Scope("prototype")
 public class HangMan implements Game {
-  private List<Character> guesses;
-  private int wrongGuesses;
+  private Set<Character> guesses;
   private String word;
-  private StringBuilder visual;
+  private HangManMatrix visual;
   private StringBuilder guessedLetters;
-  private Dictionary words;
+  private GuessValidator validate;
+
+  private class HangManMatrix {
+    private String[][] visual;
+    private int wrongGuesses;
+
+    public HangManMatrix() {
+      visual =
+          new String[][] {
+            {"-", "-", "-", "-", "-", "-", "</br>"},
+            {" ", " ", " ", " ", " ", "|", "</br>"},
+            {" ", " ", " ", " ", " ", "|", "</br>"},
+            {" ", " ", " ", " ", " ", "|", "</br>"},
+            {" ", " ", " ", " ", " ", "|", "</br>"},
+            {" ", " ", " ", " ", " ", "|", "</br>"},
+            {" ", " ", " ", " ", " ", "___", "</br>"}
+          };
+      wrongGuesses = 0;
+    }
+
+    public int getWrongGuesses() {
+      return wrongGuesses;
+    }
+
+    @Override
+    public String toString() {
+      StringBuilder print = new StringBuilder();
+      for (String[] row : visual) {
+        for (String element : row) {
+          print.append(element);
+        }
+      }
+      return print.toString();
+    }
+
+    public void nextWrong() {
+      wrongGuesses++;
+      switch (wrongGuesses) {
+        case 1:
+          visual[1][1] = "|";
+          break;
+        case 2:
+          visual[2][1] = "O";
+          break;
+        case 3:
+          visual[3][0] = "\\";
+          break;
+        case 4:
+          visual[3][2] = "/";
+          break;
+        case 5:
+          visual[4][1] = "|";
+          break;
+        case 6:
+          visual[5][0] = "/";
+          break;
+        case 7:
+          visual[5][2] = "\\";
+          break;
+        default:
+      }
+    }
+  }
+
+  private class GuessValidator {
+
+    private String message = null;
+
+    public boolean validateGuess(String guess) {
+      if (guess.isEmpty()) {
+        message = "Please make a guess!";
+      } else if (!guess.matches("^[a-zA-Z]*$")) {
+        message = "Please input only letters!";
+      } else if (guess.length() > 1) {
+        message = "Please input only 1 character at a time!";
+      } else if (guesses.contains(guess.charAt(0))) {
+        message = "This letter has already been guessed!";
+      } else {
+        return true;
+      }
+      return false;
+    }
+
+    public String getMessage() {
+      return message;
+    }
+  }
 
   private StringBuilder generateLetters() {
     StringBuilder current = new StringBuilder(word.length());
@@ -28,43 +114,13 @@ public class HangMan implements Game {
     }
     guesses.add(firstLetter);
     guesses.add(lastLetter);
-    return current;
+    return current; // "t--t"
   }
 
-  private void generateHangMan() {
-    if (wrongGuesses == 1) {
-      visual.append("------<br />");
-    } else if (wrongGuesses == 2) {
-      visual.append(" |   |<br />");
-    } else if (wrongGuesses == 3) {
-      visual.append(" O   |<br />");
-    } else if (wrongGuesses == 4) {
-      visual.append("\\ ");
-    } else if (wrongGuesses == 5) {
-      visual.append("/  |<br />");
-    } else if (wrongGuesses == 6) {
-      visual.append(" |   |<br />");
-    } else if (wrongGuesses == 7) {
-      visual.append("/ ");
-    } else if (wrongGuesses == 8) {
-      visual.append("\\  |<br />");
-      visual.append("    ___<br />");
-    }
-  }
-
-  private String getVisual() {
-    return visual.toString();
-  }
-
-  private String getGuessedLetters() {
-    return guessedLetters.toString();
-  }
-
-  private String makeGuess(Character guess) {
-    guesses.add(guess);
-    if (!word.contains((String.valueOf(guess)))) {
-      wrongGuesses++;
-      generateHangMan();
+  private String makeGuess(String guess) {
+    guesses.add(guess.charAt(0));
+    if (!word.contains(guess)) {
+      visual.nextWrong();
     } else {
       for (int i = 1; i < word.length() - 1; i++) {
         if ((guessedLetters.charAt(i) == '-') && (guesses.contains(word.charAt(i)))) {
@@ -76,29 +132,23 @@ public class HangMan implements Game {
   }
 
   private boolean gameIsOver() {
-    if (!guessedLetters.toString().contains("-") || wrongGuesses >= 8) return true;
-    return false;
+    return (!guessedLetters.toString().contains("-") || visual.getWrongGuesses() >= 7);
   }
 
   @Override
   public void play(HttpServletRequest req) {
     String guess = req.getParameter(Game.INPUT_ATTR);
-    req.getSession().removeAttribute(Game.WRONG_ATTR);
-    if (!guess.matches("^[a-zA-Z]*$")) {
-      req.getSession().setAttribute(Game.WRONG_ATTR, "Please input only letters!");
-    } else if (guess.length() > 1) {
-      req.getSession().setAttribute(Game.WRONG_ATTR, "Please input only 1 character at a time!");
+    req.getSession().removeAttribute(Game.ERROR_ATTR);
+    if (!validate.validateGuess(guess)) {
+      req.getSession()
+          .setAttribute(Game.ERROR_ATTR, validate.getMessage()); // sets appropriate message to user
     } else {
-      if (!guesses.contains(guess.charAt(0))) {
-        req.getSession().setAttribute(Game.RESULT_ATTR, makeGuess(guess.charAt(0)));
-        req.getSession().setAttribute(Game.VISUAL_ATTR, getVisual());
-        if (gameIsOver()) {
-          if (wrongGuesses >= 8) {
-            req.getSession().setAttribute(Game.LOST_ATTR, true);
-          } else req.getSession().setAttribute(Game.LOST_ATTR, false);
-        }
-      } else {
-        req.getSession().setAttribute(Game.WRONG_ATTR, "This letter has already been guessed!");
+      req.getSession().setAttribute(Game.RESULT_ATTR, makeGuess(guess)); // updates guesses so far
+      req.getSession().setAttribute(Game.VISUAL_ATTR, visual.toString()); // updates hangman
+      if (gameIsOver()) {
+        req.getSession().setAttribute(Game.LOST_ATTR, visual.getWrongGuesses() >= 7);
+        // True if game is over because of too many wrong guesses, false if it was because word was
+        // guessed
       }
     }
   }
@@ -106,16 +156,14 @@ public class HangMan implements Game {
   @Override
   public String initialPrint() {
 
-    return getGuessedLetters();
+    return visual.toString() + guessedLetters.toString();
   }
 
-  @Autowired
-  public HangMan(Dictionary words) {
-    guesses = new ArrayList<Character>();
-    wrongGuesses = 0;
-    visual = new StringBuilder();
-    this.words = words;
-    this.word = this.words.getWord();
+  public HangMan(String word) {
+    guesses = new HashSet<>();
+    visual = new HangManMatrix();
+    validate = new GuessValidator();
+    this.word = word;
     guessedLetters = generateLetters();
   }
 }

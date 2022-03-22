@@ -2,14 +2,15 @@ package hangman.presentation;
 
 import java.io.IOException;
 import org.springframework.context.ApplicationContext;
+import org.springframework.stereotype.Controller;
 import hangman.logicAndRepository.Game;
-import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
+@Controller
 @WebServlet("/games/*")
 public class GameServlet extends HttpServlet {
   private static final String GAME_ATTR = "game";
@@ -24,12 +25,9 @@ public class GameServlet extends HttpServlet {
     game = ctx.getBean(Game.class);
     // set new values
     req.getSession().setAttribute(GAME_ATTR, game);
-    req.getSession()
-        .setAttribute(
-            Game.RESULT_ATTR, ((Game) req.getSession().getAttribute(GAME_ATTR)).initialPrint());
+    req.getSession().setAttribute(Game.RESULT_ATTR, game.initialPrint());
 
-    RequestDispatcher rd = req.getServletContext().getRequestDispatcher("/game.jsp");
-    rd.forward(req, resp);
+    req.getServletContext().getRequestDispatcher("/game.jsp").forward(req, resp);
   }
 
   @Override
@@ -37,13 +35,6 @@ public class GameServlet extends HttpServlet {
       throws ServletException, IOException {
     ((Game) req.getSession().getAttribute(GAME_ATTR)).play(req);
     req.getServletContext().getRequestDispatcher("/game.jsp").forward(req, resp);
-  }
-
-  @Override
-  protected void service(HttpServletRequest req, HttpServletResponse resp)
-      throws ServletException, IOException {
-    if (req.getMethod().equalsIgnoreCase("get")) doGet(req, resp);
-    else if (req.getMethod().equalsIgnoreCase("post")) doPost(req, resp);
   }
 
   private void clearSession(HttpServletRequest req) {

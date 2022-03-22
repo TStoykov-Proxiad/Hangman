@@ -4,7 +4,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -12,7 +13,6 @@ public class Dictionary {
   private List<String> words;
   private Random rand;
 
-  @Autowired
   public Dictionary(Random rand) {
     words = new ArrayList<String>();
     this.rand = rand;
@@ -39,6 +39,8 @@ public class Dictionary {
     this.words.addAll(words);
   }
 
+  @Bean
+  @Scope("prototype")
   public String getWord() {
     return words.get(rand.nextInt(words.size()));
   }

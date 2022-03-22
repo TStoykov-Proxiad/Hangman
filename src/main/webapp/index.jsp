@@ -8,7 +8,7 @@
 <meta charset="UTF-8">
 <title>Hangman</title>
 </head>
-<body>
+<body style="text-align:center">
 	<h1>Welcome to Hangman!</h1><br/>
 	<form method="get" action="/games/${random.nextInt}">
 	<button type="submit">Start a new game!</button>
