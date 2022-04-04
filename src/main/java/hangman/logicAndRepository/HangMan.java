@@ -81,18 +81,18 @@ public class HangMan implements Game {
 
 
     //validates the guess
-    private String validateGuess(String guess) {
-        if (guess == null || guess.isEmpty()) {
-            return "Please make a guess!";
-        } else if (!guess.matches("^[a-zA-Z]*$")) {
-            return "Please input only letters!";
-        } else if (guess.length() > 1) {
-            return "Please input only 1 character at a time!";
-        } else if (guesses.contains(guess.charAt(0))) {
-            return "This letter has already been guessed!";
-        }
-        return null;
-    }
+//    private String validateGuess(String guess) {
+//        if (guess == null || guess.isEmpty()) {
+//            return "Please make a guess!";
+//        } else if (!guess.matches("^[a-zA-Z]*$")) {
+//            return "Please input only letters!";
+//        } else if (guess.length() > 1) {
+//            return "Please input only 1 character at a time!";
+//        } else if (guesses.contains(guess.charAt(0))) {
+//            return "This letter has already been guessed!";
+//        }
+//        return null;
+//    }
 
     //returns message if game has finished, and null if it is still playing
     @Override
@@ -107,7 +107,9 @@ public class HangMan implements Game {
 
     @Override
     public String play(String input) {
-        if (validateGuess(input) == null) {
+        if (guesses.contains(input.charAt(0))) {
+            return printFullVisual() + "This letter has already been guessed!";
+        } else {
             guesses.add(input.charAt(0));
             if (!word.contains(input)) {
                 hangingMan.nextWrong();
@@ -120,7 +122,6 @@ public class HangMan implements Game {
             }
             return printFullVisual();
         }
-        return printFullVisual() + validateGuess(input);
     }
 
     //returns all needed visual elements in correct representations

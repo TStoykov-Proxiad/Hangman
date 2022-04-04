@@ -2,10 +2,12 @@ package hangman.presentation;
 
 import hangman.logicAndRepository.Game;
 import hangman.logicAndRepository.GameService;
-import hangman.models.HangManModel;
+import hangman.models.GameModel;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 @Controller
@@ -15,7 +17,7 @@ public class GameController {
     GameService games;
 
     @GetMapping
-    public String getNewGame(ModelMap model, @PathVariable("gameID") String gameID) {
+    public String getGame(@ModelAttribute("gameModel") GameModel hangman, ModelMap model, @PathVariable("gameID") String gameID) {
         model.clear();
         Game game = games.startNewGame(gameID);
         model.addAttribute(Game.VISUAL_ATTR, game.printFullVisual());
@@ -24,7 +26,11 @@ public class GameController {
     }
 
     @PostMapping
-    public String playGame(@ModelAttribute("hangManModel") HangManModel hangman, ModelMap model, @PathVariable("gameID") String gameID) {
+    public String playGame(@Valid @ModelAttribute("gameModel") GameModel hangman, BindingResult br, ModelMap model, @PathVariable("gameID") String gameID) {
+        if (br.hasErrors()) {
+            model.addAttribute(Game.VISUAL_ATTR, games.getGame(gameID).printFullVisual());
+            return "game";
+        }
         model.addAttribute(Game.VISUAL_ATTR, games.makeTry(gameID, hangman.getInput()));
         model.addAttribute(Game.RESULT_ATTR, games.isOver(gameID));
         return "game";

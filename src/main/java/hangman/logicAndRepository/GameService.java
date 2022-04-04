@@ -41,4 +41,8 @@ public class GameService {
     public Game getNewGame() {
         return null;
     }
+
+    public Game getGame(String gameID) {
+        return games.get(gameID);
+    }
 }

@@ -12,9 +12,11 @@
 		<pre>${visual}</pre>
 		<c:choose>
 			<c:when test = "${isOver==null}">
-				<form:form method="post" modelAttribute="hangManModel">
+				<form:form method="post" modelAttribute="gameModel">
 					<label path="input">Guess:</label>
 					<input path="input" name="input" required />
+					<br/>
+					<form:errors path="input" style="color:red"/>
 				</form:form>
 			</c:when>
 			<c:otherwise>
