@@ -7,7 +7,7 @@ import org.springframework.context.annotation.Configuration;
 import java.util.Random;
 
 @Configuration
-@ComponentScan(basePackages = "hangman.logicAndRepository")
+@ComponentScan(basePackages = "hangman.logic")
 public class AppConfig {
 
     @Bean

@@ -1,6 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
-<jsp:useBean id="random" class="hangman.logicAndRepository.RandomBean" scope="application" />
+<jsp:useBean id="random" class="hangman.logic.RandomBean" scope="application" />
     
 <!DOCTYPE html>
 <html>

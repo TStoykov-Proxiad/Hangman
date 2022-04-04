@@ -1,6 +1,6 @@
 package logicTests;
 
-import hangman.logicAndRepository.HangMan;
+import hangman.logic.HangMan;
 import org.assertj.core.api.WithAssertions;
 import org.junit.jupiter.api.Test;
 

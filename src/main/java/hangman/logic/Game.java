@@ -1,4 +1,4 @@
-package hangman.logicAndRepository;
+package hangman.logic;
 
 public interface Game {
     public static final String VISUAL_ATTR = "visual";

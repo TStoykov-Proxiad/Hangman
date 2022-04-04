@@ -1,4 +1,4 @@
-package hangman.logicAndRepository;
+package hangman.logic;
 
 import org.springframework.beans.factory.annotation.Lookup;
 import org.springframework.stereotype.Service;

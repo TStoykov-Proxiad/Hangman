@@ -1,7 +1,7 @@
 package hangman.presentation;
 
-import hangman.logicAndRepository.Game;
-import hangman.logicAndRepository.GameService;
+import hangman.logic.Game;
+import hangman.logic.GameService;
 import hangman.models.GameModel;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +17,7 @@ public class GameController {
     GameService games;
 
     @GetMapping
-    public String getGame(@ModelAttribute("gameModel") GameModel hangman, ModelMap model, @PathVariable("gameID") String gameID) {
+    public String getGame(ModelMap model, @PathVariable("gameID") String gameID) {
         model.clear();
         Game game = games.startNewGame(gameID);
         model.addAttribute(Game.VISUAL_ATTR, game.printFullVisual());

@@ -1,6 +1,6 @@
 package hangman.presentation;
 
-import hangman.logicAndRepository.Game;
+import hangman.logic.Game;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
