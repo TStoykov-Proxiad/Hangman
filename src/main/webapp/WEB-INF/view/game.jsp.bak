@@ -1,0 +1,27 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<jsp:useBean id="random" class="hangman.logicAndRepository.RandomBean" scope="application" />
+
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>Game</title>
+    </head>
+    <body style="text-align:center">
+		<pre>${visual}</pre>
+		<c:choose>
+			<c:when test = "${isOver==false}">
+				<form:form method="POST" modelAttribute="hangManModel">
+					<form:label path="input">Guess:</form:label>
+					<form:input path="input" name="input" required />
+				</form:form>
+			</c:when>
+			<c:otherwise>
+				<form method="get" action="/games/${random.nextInt}">
+					<button type="submit" value = "Submit">New Game?</button>
+				</form>
+			</c:otherwise>
+		</c:choose>
+    </body>
+</html>

@@ -1,15 +1,21 @@
 package hangman.logicAndRepository;
 
-import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 
 public interface Game {
-  public static final String VISUAL_ATTR = "printVisual";
-  public static final String RESULT_ATTR = "result";
-  public static final String LOST_ATTR = "lost";
-  public static final String INPUT_ATTR = "input";
-  public static final String ERROR_ATTR = "error";
+    public static final String VISUAL_ATTR = "visual";
+    public static final String RESULT_ATTR = "isOver";
 
-  public void play(HttpServletRequest req);
+    public String play(String input);
 
-  public String initialPrint();
+    public String printFullVisual();
+
+    public String isGameOver();
+
+    public static void resetSession(HttpSession session) {
+        var names = session.getAttributeNames();
+        while (names.hasMoreElements()) {
+            session.removeAttribute(names.nextElement());
+        }
+    }
 }
