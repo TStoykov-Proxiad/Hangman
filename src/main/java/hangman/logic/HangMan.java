@@ -21,13 +21,13 @@ public class HangMan implements Game {
         public HangManMatrix() {
             visual =
                     new String[][]{
-                            {"-", "-", "-", "-", "-", "-", "</br>"},
-                            {" ", " ", " ", " ", " ", "|", "</br>"},
-                            {" ", " ", " ", " ", " ", "|", "</br>"},
-                            {" ", " ", " ", " ", " ", "|", "</br>"},
-                            {" ", " ", " ", " ", " ", "|", "</br>"},
-                            {" ", " ", " ", " ", " ", "|", "</br>"},
-                            {" ", " ", " ", " ", " ", "___", "</br>"}
+                            {"-", "-", "-", "-", "-", "-", "\n"},
+                            {" ", " ", " ", " ", " ", "|", "\n"},
+                            {" ", " ", " ", " ", " ", "|", "\n"},
+                            {" ", " ", " ", " ", " ", "|", "\n"},
+                            {" ", " ", " ", " ", " ", "|", "\n"},
+                            {" ", " ", " ", " ", " ", "|", "\n"},
+                            {" ", " ", " ", " ", " ", "___", "\n"}
                     };
             wrongGuesses = 0;
         }
@@ -79,21 +79,6 @@ public class HangMan implements Game {
         return current; // "t--t"
     }
 
-
-    //validates the guess
-//    private String validateGuess(String guess) {
-//        if (guess == null || guess.isEmpty()) {
-//            return "Please make a guess!";
-//        } else if (!guess.matches("^[a-zA-Z]*$")) {
-//            return "Please input only letters!";
-//        } else if (guess.length() > 1) {
-//            return "Please input only 1 character at a time!";
-//        } else if (guesses.contains(guess.charAt(0))) {
-//            return "This letter has already been guessed!";
-//        }
-//        return null;
-//    }
-
     //returns message if game has finished, and null if it is still playing
     @Override
     public String isGameOver() {
@@ -107,6 +92,7 @@ public class HangMan implements Game {
 
     @Override
     public String play(String input) {
+        input = input.toLowerCase();
         if (guesses.contains(input.charAt(0))) {
             return printFullVisual() + "This letter has already been guessed!";
         } else {
@@ -128,7 +114,7 @@ public class HangMan implements Game {
     @Override
     public String printFullVisual() {
 
-        return hangingMan.toString() + guessedLetters.toString() + "<br />";
+        return hangingMan.toString() + guessedLetters.toString() + "\n";
     }
 
     public HangMan(String word) {

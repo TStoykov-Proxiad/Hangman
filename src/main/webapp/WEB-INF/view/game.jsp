@@ -12,7 +12,7 @@
 		<pre>${visual}</pre>
 		<c:choose>
 			<c:when test = "${isOver==null}">
-				<form:form method="post" modelAttribute="gameModel">
+				<form:form method="post" modelAttribute="gameModel" id="guessForm">
 					<label path="input">Guess:</label>
 					<input path="input" name="input" required />
 					<br/>
@@ -22,7 +22,7 @@
 			<c:otherwise>
 			    <p>${isOver}</p>
 				<form method="get" action="/games/${random.nextInt}">
-					<button type="submit">New Game?</button>
+					<button type="submit" id="newGame">New Game?</button>
 				</form>
 			</c:otherwise>
 		</c:choose>

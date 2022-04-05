@@ -11,7 +11,7 @@
 <body style="text-align:center">
 	<h1>Welcome to Hangman!</h1><br/>
 	<form method="get" action="/games/${random.nextInt}">
-	<button type="submit">Start a new game!</button>
+	<button type="submit" id="newGame">Start a new game!</button>
 	</form>
 </body>
 </html>
